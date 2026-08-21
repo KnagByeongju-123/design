@@ -1,1 +1,324 @@
-Htest
+<!DOCTYPE html>
+<html lang="ko" data-theme="" class="bd-2">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0f1117">
+<title>Responsive UI Template</title>
+<style>
+/* ==========================================================
+   Responsive UI Template
+   - 외부 CDN / 외부 링크 없음
+   - PC: 상단 대분류 + 좌측 하위메뉴
+   - Mobile: 햄버거 드로어
+   - UI 설정: 폭 / 글자 / 테마 / 테두리
+   ========================================================== */
+:root{
+  --bg:#0f1117;--card:#1a1d27;--card2:#161925;--ink:#e8eaf0;--sub:#aab0c4;--gray:#8a92a8;
+  --accent:#e2b04a;--accent2:#f6d365;--accent-bg:rgba(226,176,74,.12);--accent-bd:rgba(226,176,74,.40);
+  --blue:#4f8cff;--red:#ff7b7b;--green:#7ee0a0;
+  --line:#4d5872;--line2:#3a4152;--line3:#5c6884;--line4:#6d7a99;
+  --drawer:#141721;--font-scale:1;--content-width:1020px;
+}
+html[data-theme="clean"]{
+  --bg:#f4f5f7;--card:#fff;--card2:#fafbfc;--ink:#1a1c20;--sub:#4a4f57;--gray:#8b9099;
+  --accent:#2f5fd0;--accent2:#4c7ce8;--accent-bg:#eaf1ff;--accent-bd:#c3d6fb;
+  --blue:#2f5fd0;--red:#e4443c;--green:#0a9c5c;
+  --line:#e3e6ec;--line2:#eef0f4;--line3:#d5d9e0;--line4:#c3c8d1;--drawer:#fff;
+}
+html[data-theme="mono"]{
+  --bg:#fff;--card:#fff;--card2:#f2f2f2;--ink:#000;--sub:#202020;--gray:#555;
+  --accent:#000;--accent2:#000;--accent-bg:#ececec;--accent-bd:#000;
+  --blue:#000;--red:#000;--green:#000;--line:#000;--line2:#aaa;--line3:#000;--line4:#000;--drawer:#fff;
+}
+html.bd-1:not([data-theme="mono"]){--line:#3a4152;--line2:#2a3040;--line3:#4a5268;--line4:#5a6580}
+html.bd-2:not([data-theme="mono"]){--line:#4d5872;--line2:#3a4152;--line3:#5c6884;--line4:#6d7a99}
+html.bd-3:not([data-theme="mono"]){--line:#6a7794;--line2:#4d5872;--line3:#7b89a8;--line4:#8d9bba}
+html[data-theme="clean"].bd-1{--line:#eceff3;--line2:#f3f5f8;--line3:#e0e4ea;--line4:#d2d7de}
+html[data-theme="clean"].bd-2{--line:#e3e6ec;--line2:#eef0f4;--line3:#d5d9e0;--line4:#c3c8d1}
+html[data-theme="clean"].bd-3{--line:#d2d7df;--line2:#e3e6ec;--line3:#bcc3cd;--line4:#a8b0bc}
+
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%}
+body{
+  background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic",Arial,sans-serif;
+  font-size:14px;line-height:1.6;overflow-x:hidden;
+}
+button,input,select,textarea{font:inherit}
+button{color:inherit}
+.hide{display:none!important}
+
+/* ---------- 고정 헤더 ---------- */
+header{
+  position:fixed;top:0;left:0;right:0;z-index:60;height:61px;padding:11px 16px;
+  display:flex;align-items:center;gap:12px;background:linear-gradient(180deg,#181b26,#0f1117ee);
+  border-bottom:1px solid var(--line);backdrop-filter:blur(10px);
+}
+html[data-theme="clean"] header,html[data-theme="mono"] header{background:var(--card);backdrop-filter:none}
+.hleft{display:flex;align-items:center;gap:12px;min-width:0;flex:1}.hright{display:flex;align-items:center;gap:8px;margin-left:auto;position:relative}
+.hmb{width:38px;height:38px;border:1px solid var(--line);background:var(--card);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;flex-shrink:0}
+.hmb i{display:block;width:16px;height:2px;background:var(--accent)}
+.htitle{font-size:17px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand-accent{color:var(--accent)}
+.rev{font-size:10px;color:var(--sub);border:1px solid var(--line);padding:1px 6px;opacity:.75}
+
+/* ---------- PC 상단 메뉴 ---------- */
+.topnav{display:none}
+.sidenav{display:none}
+@media(min-width:1000px){
+  .topnav{display:flex;position:fixed;top:61px;left:0;right:0;height:38px;z-index:55;background:var(--card2);border-bottom:1px solid var(--line);overflow-x:auto}
+  .topnav button{height:38px;padding:0 18px;border:0;border-right:1px solid var(--line2);background:transparent;color:var(--sub);font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap}
+  .topnav button:hover{color:var(--accent);background:var(--accent-bg)}
+  .topnav button.on{color:var(--accent);background:var(--card);border-bottom:2px solid var(--accent);font-weight:800}
+  .sidenav{display:block;position:fixed;top:99px;left:0;bottom:0;width:198px;z-index:50;background:var(--drawer);border-right:1px solid var(--line);overflow-y:auto}
+  .sidenav .shd{position:sticky;top:0;background:var(--card2);border-bottom:1px solid var(--line);padding:9px 12px;font-size:12px;font-weight:800;color:var(--accent)}
+  .sidenav button{width:100%;display:flex;align-items:center;gap:8px;padding:10px 12px 10px 18px;border:0;border-bottom:1px solid var(--line2);background:transparent;color:var(--sub);font-size:12.5px;font-weight:600;text-align:left;cursor:pointer}
+  .sidenav button:hover,.sidenav button.on{background:var(--accent-bg);color:var(--accent)}
+  .sidenav button.on{box-shadow:inset 3px 0 0 var(--accent);font-weight:800}
+}
+
+/* ---------- 모바일 드로어 ---------- */
+#dim{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.55);opacity:0;visibility:hidden;transition:.25s}
+#dim.on{opacity:1;visibility:visible}
+#drawer{position:fixed;top:0;left:0;bottom:0;z-index:90;width:308px;max-width:88vw;background:var(--drawer);border-right:1px solid var(--line);transform:translateX(-102%);transition:transform .28s ease;display:flex;flex-direction:column;padding:20px 14px;overflow-y:auto;box-shadow:6px 0 24px rgba(0,0,0,.45)}
+#drawer.on{transform:none}.dlogo{display:flex;align-items:center;gap:10px;padding:4px 8px 17px;border-bottom:1px solid var(--line);margin-bottom:12px}
+.dlogo b{width:38px;height:38px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--accent2),var(--accent));color:#241a05;font-size:14px;font-weight:900}
+html[data-theme="mono"] .dlogo b{color:#fff}.dlogo .n{font-size:18px;font-weight:900}.dlogo .s{font-size:12px;color:var(--sub)}
+.mgroup{margin-bottom:3px}.mhead,.mitem{width:100%;display:flex;align-items:center;gap:12px;border:0;background:transparent;color:var(--sub);text-align:left;cursor:pointer}
+.mhead{padding:13px 12px;font-size:16px;font-weight:800}.mhead .arrow{margin-left:auto;transition:.2s}.mgroup.open .mhead{color:var(--accent)}.mgroup.open .arrow{transform:rotate(180deg)}
+.msub{display:none;margin-left:12px;padding-left:8px;border-left:1px dashed var(--line)}.mgroup.open .msub{display:block}
+.mitem{padding:11px 10px;font-size:14px}.mitem:hover,.mitem.on{background:var(--accent-bg);color:var(--accent)}
+.drawer-foot{margin-top:auto;padding:16px 8px 4px;color:var(--gray);font-size:11.5px}
+
+/* ---------- UI 설정 팝업 ---------- */
+.ui-menu{position:relative}.ui-btn{width:32px;height:32px;border:1px solid var(--line);background:var(--card);cursor:pointer;font-size:15px}
+.ui-btn:hover,.ui-btn.on{border-color:var(--accent-bd);background:var(--accent-bg);color:var(--accent)}
+.ui-popup{position:absolute;right:0;top:calc(100% + 10px);width:300px;padding:13px 14px;background:var(--card);border:1px solid var(--line3);box-shadow:0 14px 38px rgba(0,0,0,.45);opacity:0;visibility:hidden;transform:translateY(-6px) scale(.98);transform-origin:top right;transition:.14s;z-index:150}
+.ui-popup.show{opacity:1;visibility:visible;transform:none}.ui-pophead{display:flex;align-items:center;padding-bottom:9px;margin-bottom:10px;border-bottom:1px solid var(--line2)}
+.ui-pophead b{font-size:12.5px;color:var(--accent)}.ui-close{margin-left:auto;border:0;background:transparent;color:var(--gray);font-size:19px;cursor:pointer}
+.ui-row{display:flex;justify-content:space-between;align-items:center;margin-top:10px;margin-bottom:4px;font-size:11.5px;color:var(--sub)}.ui-row b{color:var(--accent)}
+.ui-range{width:100%;height:24px;accent-color:var(--accent)}.ui-scale{display:flex;justify-content:space-between;font-size:9.5px;color:var(--gray)}
+.quick,.theme-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:7px}.theme-grid{grid-template-columns:repeat(2,1fr)}
+.quick button,.theme-grid button,.ui-reset{padding:7px 5px;border:1px solid var(--line);background:var(--card2);color:var(--sub);font-size:11px;font-weight:800;cursor:pointer}
+.quick button.on,.theme-grid button.on{border-color:var(--accent-bd);background:var(--accent-bg);color:var(--accent)}
+.theme-grid button{display:flex;align-items:center;gap:6px}.theme-grid i{width:11px;height:11px;border-radius:50%;display:block;flex-shrink:0}
+.ui-foot{display:flex;align-items:center;margin-top:10px;padding-top:9px;border-top:1px solid var(--line2)}.saved{font-size:10.5px;color:var(--green)}.ui-reset{margin-left:auto;padding:6px 10px}
+
+/* ---------- 본문 ---------- */
+main{padding:81px 16px 60px;zoom:var(--font-scale)}
+.view{width:min(var(--content-width),100%);margin:0 auto;animation:fade .2s ease}
+@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+@media(min-width:1000px){main{margin-left:198px;padding-top:113px}.view{width:min(var(--content-width),calc(100vw - 230px));}}
+@media(max-width:760px){.rev{display:none}.ui-popup{width:min(290px,calc(100vw - 26px))}.desktop-only{display:none!important}.htitle{font-size:15px}}
+
+.page-title{font-size:20px;font-weight:900;margin-bottom:14px}.page-title small{font-size:12px;color:var(--sub);font-weight:500;margin-left:8px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}.card,.panel{background:var(--card);border:1px solid var(--line);padding:16px}
+.card .k{font-size:11px;color:var(--sub);font-weight:700}.card .v{font-size:25px;font-weight:900;color:var(--accent)}
+.toolbar{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:12px}.btn{padding:8px 13px;border:1px solid var(--line);background:var(--card2);color:var(--sub);font-weight:700;cursor:pointer}.btn:hover,.btn.primary{border-color:var(--accent-bd);background:var(--accent-bg);color:var(--accent)}
+.table-wrap{overflow:auto;border:1px solid var(--line)}table{width:100%;border-collapse:collapse;min-width:620px;background:var(--card)}th,td{padding:10px 12px;border-bottom:1px solid var(--line2);text-align:left;font-size:12.5px}th{background:var(--card2);color:var(--accent)}tr:last-child td{border-bottom:0}.status{display:inline-block;padding:2px 8px;font-size:10.5px;font-weight:800;border:1px solid var(--accent-bd);background:var(--accent-bg);color:var(--accent)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field label{display:block;margin-bottom:4px;font-size:11.5px;font-weight:700;color:var(--sub)}.field input,.field select,.field textarea{width:100%;padding:10px 11px;border:1px solid var(--line3);background:var(--card2);color:var(--ink);outline:none}.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent)}.field.full{grid-column:1/-1}
+.placeholder{padding:34px 18px;text-align:center;border:1px dashed var(--line3);background:var(--card2);color:var(--sub)}
+.note{margin-bottom:14px;padding:11px 13px;border:1px solid var(--accent-bd);background:var(--accent-bg);color:var(--sub);font-size:12.5px}.note b{color:var(--accent)}
+@media(max-width:700px){.cards,.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.card{padding:13px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="hleft">
+    <button class="hmb" type="button" aria-label="메뉴 열기" onclick="openDrawer()"><i></i><i></i><i></i></button>
+    <span class="htitle" id="headerTitle"><span class="brand-accent">UI TEMPLATE</span> · 대시보드</span>
+  </div>
+  <div class="hright">
+    <span class="rev">FORMAT 1.0</span>
+    <div class="ui-menu">
+      <button id="uiBtn" class="ui-btn" type="button" title="UI 설정" aria-label="UI 설정" onclick="toggleUi(event)">📐</button>
+      <div id="uiPopup" class="ui-popup" onclick="event.stopPropagation()">
+        <div class="ui-pophead"><b>UI 화면 설정</b><button class="ui-close" type="button" onclick="closeUi()">×</button></div>
+
+        <div class="desktop-only">
+          <div class="ui-row"><span>콘텐츠 폭</span><b id="widthValue">1020px</b></div>
+          <input id="widthRange" class="ui-range" type="range" min="720" max="1400" step="20" value="1020" oninput="setWidth(this.value,false)" onchange="setWidth(this.value,true)">
+          <div class="ui-scale"><span>720px</span><span>1400px</span></div>
+        </div>
+
+        <div class="ui-row"><span>글자 크기</span><b id="fontValue">100%</b></div>
+        <input id="fontRange" class="ui-range" type="range" min="80" max="150" step="5" value="100" oninput="setFont(this.value,false)" onchange="setFont(this.value,true)">
+        <div class="ui-scale"><span>80%</span><span>150%</span></div>
+        <div class="quick">
+          <button type="button" onclick="stepFont(-5)">A−</button><button type="button" onclick="setFont(100,true)">100%</button><button type="button" onclick="stepFont(5)">A+</button>
+        </div>
+
+        <div class="ui-row"><span>화면 색상</span><b id="themeValue">기본</b></div>
+        <div class="theme-grid">
+          <button type="button" data-theme-value="" onclick="setTheme('')"><i style="background:#e2b04a"></i>기본</button>
+          <button type="button" data-theme-value="clean" onclick="setTheme('clean')"><i style="background:#2f5fd0"></i>클린</button>
+          <button type="button" data-theme-value="mono" onclick="setTheme('mono')"><i style="background:#fff;border:1px solid #777"></i>모노</button>
+        </div>
+
+        <div class="ui-row"><span>테두리 진하기</span><b id="borderValue">진하게</b></div>
+        <div class="quick" id="borderButtons">
+          <button type="button" data-border="1" onclick="setBorder(1)">기본</button>
+          <button type="button" data-border="2" onclick="setBorder(2)">진하게</button>
+          <button type="button" data-border="3" onclick="setBorder(3)">더 진하게</button>
+        </div>
+        <div class="ui-foot"><span class="saved" id="savedText">저장됨</span><button class="ui-reset" type="button" onclick="resetUi()">기본값으로</button></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<nav id="topnav" class="topnav" aria-label="상단 메뉴"></nav>
+<aside id="sidenav" class="sidenav" aria-label="좌측 메뉴"></aside>
+
+<div id="dim" onclick="closeDrawer()"></div>
+<nav id="drawer" aria-label="모바일 메뉴">
+  <div class="dlogo"><b>UI</b><div><div class="n">Reusable UI</div><div class="s">PC · Mobile Template</div></div></div>
+  <div id="drawerMenus"></div>
+  <div class="drawer-foot">외부 링크와 업무 로직을 제거한<br>재사용용 화면 포맷입니다.</div>
+</nav>
+
+<main>
+  <section id="view-dashboard" class="view">
+    <h1 class="page-title">대시보드 <small>샘플 화면</small></h1>
+    <div class="note"><b>사용 방법</b> · 메뉴 이름과 샘플 콘텐츠만 교체해서 다른 업무 화면의 기본 틀로 사용할 수 있습니다.</div>
+    <div class="cards">
+      <div class="card"><div class="k">진행</div><div class="v">12</div></div>
+      <div class="card"><div class="k">완료</div><div class="v">28</div></div>
+      <div class="card"><div class="k">확인 필요</div><div class="v">3</div></div>
+    </div>
+    <div class="panel">
+      <div class="toolbar"><button class="btn primary" type="button">기본 버튼</button><button class="btn" type="button">보조 버튼</button></div>
+      <div class="placeholder">이 영역에 차트, 공정현황, 카드형 데이터 등 필요한 내용을 배치하세요.</div>
+    </div>
+  </section>
+
+  <section id="view-list" class="view hide">
+    <h1 class="page-title">목록 관리 <small>테이블 샘플</small></h1>
+    <div class="toolbar"><button class="btn primary" type="button">신규 등록</button><button class="btn" type="button">검색</button><button class="btn" type="button">초기화</button></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>No</th><th>항목명</th><th>구분</th><th>담당</th><th>상태</th><th>등록일</th></tr></thead>
+        <tbody>
+          <tr><td>001</td><td>샘플 데이터 A</td><td>A Type</td><td>홍길동</td><td><span class="status">진행</span></td><td>2026-08-21</td></tr>
+          <tr><td>002</td><td>샘플 데이터 B</td><td>B Type</td><td>김담당</td><td><span class="status">완료</span></td><td>2026-08-20</td></tr>
+          <tr><td>003</td><td>샘플 데이터 C</td><td>A Type</td><td>이담당</td><td><span class="status">대기</span></td><td>2026-08-19</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="view-form" class="view hide">
+    <h1 class="page-title">등록 화면 <small>폼 샘플</small></h1>
+    <div class="panel">
+      <div class="form-grid">
+        <div class="field"><label>항목명</label><input type="text" placeholder="내용 입력"></div>
+        <div class="field"><label>구분</label><select><option>선택</option><option>A Type</option><option>B Type</option></select></div>
+        <div class="field"><label>담당자</label><input type="text" placeholder="담당자"></div>
+        <div class="field"><label>기준일</label><input type="date"></div>
+        <div class="field full"><label>메모</label><textarea rows="5" placeholder="메모 입력"></textarea></div>
+      </div>
+      <div class="toolbar" style="margin-top:14px;margin-bottom:0"><button class="btn primary" type="button">저장</button><button class="btn" type="button">취소</button></div>
+    </div>
+  </section>
+
+  <section id="view-settings" class="view hide">
+    <h1 class="page-title">기준정보 <small>샘플 화면</small></h1>
+    <div class="panel"><div class="placeholder">기준정보, 사용자설정, 코드관리 등의 화면을 이 영역에 구성할 수 있습니다.</div></div>
+  </section>
+</main>
+
+<script>
+/* ==========================================================
+   메뉴 데이터만 수정하면 PC 상단/좌측 메뉴와 모바일 메뉴가 같이 바뀝니다.
+   view 값은 아래 section id의 "view-..." 부분과 맞추면 됩니다.
+   ========================================================== */
+const MENU = [
+  {key:'main', name:'업무관리', icon:'▦', items:[
+    {view:'dashboard', name:'대시보드', icon:'⌂'},
+    {view:'list', name:'목록 관리', icon:'☷'},
+    {view:'form', name:'등록 화면', icon:'＋'}
+  ]},
+  {key:'base', name:'기준정보', icon:'⚙', items:[
+    {view:'settings', name:'기준정보', icon:'◇'},
+    {view:'dashboard', name:'메뉴 예제', icon:'○'}
+  ]},
+  {key:'sample', name:'샘플메뉴', icon:'□', items:[
+    {view:'list', name:'샘플 목록', icon:'≡'},
+    {view:'form', name:'샘플 입력', icon:'✎'}
+  ]}
+];
+
+let currentCat='main';
+let currentView='dashboard';
+const titleMap={dashboard:'대시보드',list:'목록 관리',form:'등록 화면',settings:'기준정보'};
+
+function buildMenus(){
+  const top=document.getElementById('topnav');
+  top.innerHTML=MENU.map(c=>`<button type="button" data-cat="${c.key}" onclick="selectCategory('${c.key}')">${c.icon} ${c.name}</button>`).join('');
+  buildSide();
+
+  const drawer=document.getElementById('drawerMenus');
+  drawer.innerHTML=MENU.map((c,idx)=>`<div class="mgroup ${idx===0?'open':''}" data-group="${c.key}">
+    <button class="mhead" type="button" onclick="toggleGroup('${c.key}')"><span>${c.icon}</span>${c.name}<span class="arrow">▾</span></button>
+    <div class="msub">${c.items.map(i=>`<button class="mitem" type="button" data-view="${i.view}" onclick="showView('${i.view}','${c.key}')"><span>${i.icon}</span>${i.name}</button>`).join('')}</div>
+  </div>`).join('');
+  markMenus();
+}
+function buildSide(){
+  const cat=MENU.find(c=>c.key===currentCat)||MENU[0];
+  const side=document.getElementById('sidenav');
+  side.innerHTML=`<div class="shd">${cat.icon} ${cat.name}</div>`+cat.items.map(i=>`<button type="button" data-view="${i.view}" onclick="showView('${i.view}','${cat.key}')"><span>${i.icon}</span>${i.name}</button>`).join('');
+  markMenus();
+}
+function selectCategory(key){currentCat=key;buildSide();markMenus()}
+function toggleGroup(key){document.querySelector(`[data-group="${key}"]`)?.classList.toggle('open')}
+function showView(view,cat){
+  currentView=view;currentCat=cat||currentCat;
+  document.querySelectorAll('.view').forEach(v=>v.classList.add('hide'));
+  document.getElementById('view-'+view)?.classList.remove('hide');
+  document.getElementById('headerTitle').innerHTML=`<span class="brand-accent">UI TEMPLATE</span> · ${titleMap[view]||view}`;
+  buildSide();markMenus();closeDrawer();
+}
+function markMenus(){
+  document.querySelectorAll('#topnav button').forEach(b=>b.classList.toggle('on',b.dataset.cat===currentCat));
+  document.querySelectorAll('#sidenav button[data-view],#drawer .mitem').forEach(b=>b.classList.toggle('on',b.dataset.view===currentView));
+}
+function openDrawer(){document.getElementById('drawer').classList.add('on');document.getElementById('dim').classList.add('on')}
+function closeDrawer(){document.getElementById('drawer').classList.remove('on');document.getElementById('dim').classList.remove('on')}
+
+/* ---------- UI 설정 ---------- */
+const STORE='reusable_ui_template_v1';
+let settings={width:1020,font:100,theme:'',border:2};
+function loadSettings(){
+  try{settings={...settings,...JSON.parse(localStorage.getItem(STORE)||'{}')}}catch(e){}
+  applySettings();
+}
+function saveSettings(){try{localStorage.setItem(STORE,JSON.stringify(settings))}catch(e){};saved('저장됨')}
+function applySettings(){
+  document.documentElement.dataset.theme=settings.theme||'';
+  document.documentElement.classList.remove('bd-1','bd-2','bd-3');document.documentElement.classList.add('bd-'+settings.border);
+  document.documentElement.style.setProperty('--content-width',settings.width+'px');
+  document.documentElement.style.setProperty('--font-scale',settings.font/100);
+  document.getElementById('widthRange').value=settings.width;document.getElementById('widthValue').textContent=settings.width+'px';
+  document.getElementById('fontRange').value=settings.font;document.getElementById('fontValue').textContent=settings.font+'%';
+  document.getElementById('themeValue').textContent=settings.theme==='clean'?'클린':settings.theme==='mono'?'모노':'기본';
+  document.getElementById('borderValue').textContent=settings.border===1?'기본':settings.border===3?'더 진하게':'진하게';
+  document.querySelectorAll('[data-theme-value]').forEach(b=>b.classList.toggle('on',b.dataset.themeValue===settings.theme));
+  document.querySelectorAll('[data-border]').forEach(b=>b.classList.toggle('on',Number(b.dataset.border)===settings.border));
+}
+function setWidth(v,save){settings.width=Math.max(720,Math.min(1400,Number(v)||1020));applySettings();if(save)saveSettings();else saved('조절중')}
+function setFont(v,save){settings.font=Math.max(80,Math.min(150,Number(v)||100));applySettings();if(save)saveSettings();else saved('조절중')}
+function stepFont(v){setFont(settings.font+v,true)}
+function setTheme(v){settings.theme=v;applySettings();saveSettings()}
+function setBorder(v){settings.border=Number(v);applySettings();saveSettings()}
+function resetUi(){settings={width:1020,font:100,theme:'',border:2};applySettings();saveSettings();saved('기본값')}
+function saved(text){const el=document.getElementById('savedText');el.textContent=text;if(text!=='저장됨')setTimeout(()=>el.textContent='저장됨',700)}
+function toggleUi(e){e.stopPropagation();const p=document.getElementById('uiPopup'),b=document.getElementById('uiBtn');p.classList.toggle('show');b.classList.toggle('on',p.classList.contains('show'))}
+function closeUi(){document.getElementById('uiPopup').classList.remove('show');document.getElementById('uiBtn').classList.remove('on')}
+document.addEventListener('click',closeUi);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeUi();closeDrawer()}});
+
+buildMenus();loadSettings();showView('dashboard','main');
+</script>
+</body>
+</html>
