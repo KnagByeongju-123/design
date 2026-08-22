@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>D5 ERP - 4단 메뉴 / 누적 탭</title>
+<style>
+:root{
+  --top1-h:36px;
+  --top2-h:72px;
+  --left-w:210px;
+  --tab-h:32px;
+  --blue:#2d66ad;
+  --blue-dark:#1f4f8c;
+  --blue-soft:#dce8f6;
+  --line:#a9b6c4;
+  --line2:#c8d1da;
+  --panel:#eef2f5;
+  --header:#e7edf3;
+  --text:#25313d;
+  --muted:#667483;
+  --shadow:rgba(24,45,67,.15);
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{
+  font-family:"Malgun Gothic","맑은 고딕",Arial,sans-serif;
+  font-size:12px;
+  color:var(--text);
+  background:#dfe5ea;
+  overflow:hidden;
+}
+button,input,select{font:inherit}
+button{cursor:pointer}
+
+/* 1차 메뉴 */
+.top-level-1{
+  position:fixed;left:0;right:0;top:0;height:var(--top1-h);z-index:100;
+  display:flex;align-items:stretch;
+  background:linear-gradient(#f9fbfc,#e4eaf0);
+  border-bottom:1px solid #8d9aaa;
+  box-shadow:0 1px 2px rgba(0,0,0,.06);
+}
+.app-mark{
+  width:72px;display:flex;align-items:center;justify-content:center;
+  border-right:1px solid #b7c1cb;background:#f1f4f7;
+  font-weight:900;color:#b63b30;letter-spacing:.5px;
+}
+.l1-menu{display:flex;align-items:stretch;overflow:auto;white-space:nowrap}
+.l1-btn{
+  min-width:88px;padding:0 14px;border:0;border-right:1px solid #c6ced6;
+  background:transparent;color:#3d4a58;font-weight:700;
+}
+.l1-btn:hover{background:#edf3f9;color:var(--blue-dark)}
+.l1-btn.active{background:#dce8f5;color:var(--blue-dark);box-shadow:inset 0 -3px 0 var(--blue)}
+.top-status{
+  margin-left:auto;display:flex;align-items:center;gap:10px;padding:0 12px;
+  color:#6f7c89;font-size:11px;background:#f8fafc;border-left:1px solid #c6ced6;
+}
+.status-dot{width:7px;height:7px;background:#2f9d63;border-radius:50%}
+
+/* 2차 메뉴 */
+.top-level-2{
+  position:fixed;top:var(--top1-h);left:0;right:0;height:var(--top2-h);z-index:90;
+  display:flex;align-items:stretch;background:linear-gradient(#f7f9fb,#e8edf2);
+  border-bottom:1px solid #929fad;
+}
+.l2-title{
+  width:72px;display:flex;align-items:center;justify-content:center;
+  background:#eef2f6;border-right:1px solid #bdc7d0;color:#677482;font-weight:700;
+}
+.l2-menu{display:flex;align-items:stretch;overflow:auto;min-width:0}
+.l2-btn{
+  position:relative;min-width:80px;padding:8px 10px 6px;border:0;border-right:1px solid #ccd3da;
+  background:transparent;color:#4b5967;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+}
+.l2-btn:hover{background:#fdfefe}
+.l2-btn.active{background:#ffffff;color:var(--blue-dark);box-shadow:inset 0 -3px 0 var(--blue)}
+.l2-icon{
+  width:28px;height:28px;display:grid;place-items:center;font-size:18px;
+  border:1px solid #bcc7d2;background:linear-gradient(#fff,#e9eef3);box-shadow:inset 0 0 0 1px #fff;
+}
+.l2-label{font-weight:700;font-size:11px}
+
+/* 좌측 메뉴 */
+.left-panel{
+  position:fixed;top:calc(var(--top1-h) + var(--top2-h));left:0;bottom:0;width:var(--left-w);z-index:80;
+  background:#f4f6f8;border-right:1px solid #8f9dab;box-shadow:2px 0 4px rgba(0,0,0,.04);
+  display:flex;flex-direction:column;
+}
+.left-head{
+  height:34px;padding:0 10px;display:flex;align-items:center;gap:7px;
+  background:linear-gradient(#edf2f6,#dbe3ea);border-bottom:1px solid #9eabb8;
+  color:#314355;font-weight:800;
+}
+.left-head .tiny{font-size:10px;color:#7a8793;margin-left:auto}
+.tree{padding:4px 0;overflow:auto;flex:1;background:#f8fafb}
+.tree-group{border-bottom:1px solid #d5dce3}
+.tree-caption{
+  padding:7px 10px;background:#edf2f6;color:#546271;font-weight:800;
+  display:flex;align-items:center;gap:6px;
+}
+.tree-caption::before{content:"▾";font-size:10px;color:#738394}
+.tree-item{
+  width:100%;border:0;background:transparent;text-align:left;padding:7px 8px 7px 26px;
+  color:#475563;border-top:1px solid #f1f3f5;position:relative;
+}
+.tree-item::before{content:"•";position:absolute;left:15px;color:#7d8b99}
+.tree-item:hover{background:#e8f0f8;color:#1f4f8c}
+.tree-item.active{background:#d6e5f6;color:#153f74;font-weight:800;box-shadow:inset 3px 0 0 var(--blue)}
+
+/* 본문 + 누적 탭 */
+.workspace{
+  position:fixed;
+  top:calc(var(--top1-h) + var(--top2-h));
+  left:var(--left-w);right:0;bottom:0;
+  background:#cdd5dc;
+  display:flex;flex-direction:column;min-width:0;
+}
+.tabbar{
+  height:var(--tab-h);display:flex;align-items:flex-end;gap:2px;padding:4px 5px 0;
+  background:linear-gradient(#e7ecf1,#cfd7df);border-bottom:1px solid #8493a2;
+  overflow-x:auto;overflow-y:hidden;white-space:nowrap;
+}
+.tab{
+  height:28px;min-width:115px;max-width:210px;display:flex;align-items:center;
+  border:1px solid #97a6b5;border-bottom:0;background:linear-gradient(#f5f7f9,#d9e0e7);
+  color:#566371;padding:0 5px 0 9px;box-shadow:0 -1px 0 rgba(255,255,255,.7) inset;
+}
+.tab.active{background:#fff;color:#234d7f;font-weight:800;border-color:#7990a8;position:relative;z-index:2}
+.tab .tab-title{overflow:hidden;text-overflow:ellipsis}
+.tab .close{
+  margin-left:auto;width:20px;height:20px;border:0;background:transparent;color:#7e8994;font-size:14px;line-height:18px;padding:0;
+}
+.tab .close:hover{background:#e1e7ed;color:#b23030}
+.tab-home .close{display:none}
+
+.content-shell{flex:1;min-height:0;padding:7px;background:#dfe4e9}
+.page{
+  height:100%;background:#fff;border:1px solid #8f9cab;box-shadow:0 1px 3px var(--shadow);
+  display:none;overflow:auto;
+}
+.page.active{display:block}
+.page-title{
+  height:34px;display:flex;align-items:center;padding:0 9px;gap:8px;
+  background:linear-gradient(#fbfcfd,#e8edf2);border-bottom:1px solid #a9b6c2;
+}
+.page-title h2{font-size:14px;margin:0;color:#41556a;font-weight:800}
+.page-title h2::before{content:"◯";margin-right:5px;color:#76879a;font-size:13px}
+.page-title .sub{font-size:10px;color:#8894a0}
+.page-actions{margin-left:auto;display:flex;gap:4px}
+.erp-btn{
+  height:24px;padding:0 10px;border:1px solid #9aa8b6;background:linear-gradient(#fff,#e1e7ec);color:#405163;
+}
+.erp-btn:hover{border-color:#6e8fb3;background:#edf5fd}
+.erp-btn.primary{background:linear-gradient(#4f84c0,#2e67a8);color:#fff;border-color:#24578f}
+
+/* 검색 조건 */
+.search-panel{margin:7px;border:1px solid #a9b6c3;background:#f7f9fb}
+.search-row{display:grid;grid-template-columns:92px minmax(130px,1fr) 92px minmax(130px,1fr) 92px minmax(130px,1fr);border-bottom:1px solid #d6dde4}
+.search-row:last-child{border-bottom:0}
+.search-label{display:flex;align-items:center;padding:5px 7px;background:#edf2f6;border-right:1px solid #d1d9e0;color:#526171;font-weight:700}
+.search-field{padding:4px 6px;border-right:1px solid #e0e5ea}
+.search-field:last-child{border-right:0}
+.search-field input,.search-field select{height:24px;width:100%;border:1px solid #aeb9c4;background:#fff;padding:0 6px;color:#42515f}
+
+/* 그리드 */
+.grid-wrap{margin:7px;border:1px solid #8494a4;overflow:auto;background:#fff}
+.grid-toolbar{height:28px;background:#edf2f6;border-bottom:1px solid #aab6c1;display:flex;align-items:center;padding:0 6px;gap:4px;color:#697785}
+.grid-toolbar .right{margin-left:auto}
+table.erp-grid{width:100%;border-collapse:collapse;min-width:1050px;table-layout:fixed}
+.erp-grid th{
+  height:27px;background:linear-gradient(#f3f6f8,#dce3e9);border-right:1px solid #aab7c3;border-bottom:1px solid #91a0af;
+  color:#4a5968;font-weight:800;text-align:center;padding:0 5px;white-space:nowrap;
+}
+.erp-grid td{height:26px;border-right:1px solid #d0d7de;border-bottom:1px solid #d9dfe5;padding:0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.erp-grid tr:nth-child(even) td{background:#fafbfc}
+.erp-grid tr:hover td{background:#e8f1fa}
+.erp-grid tr.selected td{background:#2f68ad;color:#fff}
+.erp-grid .num{text-align:right}
+.erp-grid .center{text-align:center}
+.erp-grid .status{font-weight:700;color:#2f6e49}
+.erp-grid .selected .status{color:#fff}
+
+.info-box{margin:7px;border:1px solid #aab6c2;background:#f8fafc;padding:10px;line-height:1.8}
+.info-box b{color:#2e5f95}
+
+/* 화면 하단 상태바 */
+.bottom-status{
+  position:fixed;left:var(--left-w);right:0;bottom:0;height:22px;
+  display:flex;align-items:center;padding:0 8px;background:#e7ecf0;border-top:1px solid #9aa8b5;color:#6f7b87;font-size:10px;z-index:85;pointer-events:none;
+}
+.bottom-status .right{margin-left:auto}
+.content-shell{padding-bottom:29px}
+
+@media(max-width:900px){
+  :root{--left-w:175px}
+  .l1-btn{min-width:76px;padding:0 10px}
+  .l2-btn{min-width:70px}
+  .search-row{grid-template-columns:82px 1fr 82px 1fr}
+  .search-row .hide-sm{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- 1차 메뉴 -->
+<header class="top-level-1">
+  <div class="app-mark">D5 ERP</div>
+  <nav class="l1-menu" id="l1Menu"></nav>
+  <div class="top-status"><span class="status-dot"></span><span>ERP Connected</span><span id="clock"></span></div>
+</header>
+
+<!-- 2차 메뉴 -->
+<section class="top-level-2">
+  <div class="l2-title">업무메뉴</div>
+  <nav class="l2-menu" id="l2Menu"></nav>
+</section>
+
+<!-- 좌측 메뉴 -->
+<aside class="left-panel">
+  <div class="left-head"><span id="leftTitle">수주</span><span class="tiny">MENU</span></div>
+  <div class="tree" id="treeMenu"></div>
+</aside>
+
+<!-- 본문: 누적 탭 + 페이지 -->
+<main class="workspace">
+  <div class="tabbar" id="tabbar"></div>
+  <div class="content-shell" id="contentShell"></div>
+</main>
+
+<div class="bottom-status"><span>사용자: ADMIN</span><span style="margin-left:18px">회사: D5 SAMPLE</span><span class="right">Ready</span></div>
+
+<script>
+const MENU = [
+  {
+    key:'sales', name:'영업관리',
+    second:[
+      {key:'order', name:'수주', icon:'▣', groups:[
+        {name:'수주', items:[['order-reg','수주등록'],['order-status','수주현황'],['order-change','수주변경']]},
+        {name:'영업관리', items:[['sales-plan','영업계획'],['sales-result','영업실적']]}
+      ]},
+      {key:'salesplan', name:'영업계획', icon:'▤', groups:[{name:'계획',items:[['year-plan','연간계획'],['month-plan','월간계획']]}]},
+      {key:'roadmap', name:'금형로드맵', icon:'▥', groups:[{name:'로드맵',items:[['roadmap-main','로드맵관리'],['roadmap-view','로드맵현황']]}]},
+      {key:'delivery', name:'SET납품', icon:'◆', groups:[{name:'납품',items:[['set-plan','납품계획'],['set-result','납품실적']]}]},
+      {key:'review', name:'리비전', icon:'▧', groups:[{name:'변경관리',items:[['rev-list','리비전목록'],['rev-history','변경이력']]}]}
+    ]
+  },
+  {
+    key:'design', name:'설계관리',
+    second:[
+      {key:'designbase', name:'설계기준', icon:'◈', groups:[{name:'설계',items:[['drawing','도면관리'],['spec','사양관리'],['bom','BOM관리']]}]},
+      {key:'progress', name:'설계진도', icon:'▦', groups:[{name:'진도',items:[['design-progress','설계진도현황'],['design-delay','지연현황']]}]}
+    ]
+  },
+  {
+    key:'purchase', name:'구매관리',
+    second:[
+      {key:'po', name:'발주', icon:'▨', groups:[{name:'구매',items:[['po-reg','발주등록'],['po-status','발주현황'],['vendor','거래처관리']]}]},
+      {key:'inbound', name:'입고', icon:'↓', groups:[{name:'입고',items:[['inbound-reg','입고등록'],['inbound-status','입고현황']]}]}
+    ]
+  },
+  {
+    key:'mfg', name:'제조관리',
+    second:[
+      {key:'work', name:'작업지시', icon:'⚙', groups:[{name:'생산',items:[['work-order','작업지시'],['work-status','생산현황'],['work-result','생산실적']]}]},
+      {key:'quality', name:'품질', icon:'✓', groups:[{name:'품질',items:[['inspection','검사등록'],['quality-status','품질현황']]}]}
+    ]
+  },
+  {
+    key:'cost', name:'원가관리',
+    second:[
+      {key:'costing', name:'원가계산', icon:'₩', groups:[{name:'원가',items:[['cost-calc','원가계산'],['cost-status','원가현황']]}]}
+    ]
+  },
+  {
+    key:'base', name:'기준정보',
+    second:[
+      {key:'master', name:'기준정보', icon:'▦', groups:[{name:'마스터',items:[['item-master','품목정보'],['code-master','공통코드'],['user-master','사용자관리']]}]}
+    ]
+  }
+];
+
+let currentL1 = 'sales';
+let currentL2 = 'order';
+let activeTab = 'order-status';
+const openTabs = new Map();
+
+const pageMeta = {
+  'order-reg': ['수주등록','신규 수주 정보를 등록하는 화면입니다.'],
+  'order-status': ['수주현황','수주 목록 및 진행 상태를 조회합니다.'],
+  'order-change': ['수주변경','변경 요청 및 이력을 관리합니다.'],
+  'sales-plan': ['영업계획','영업 계획을 관리합니다.'],
+  'sales-result': ['영업실적','영업 실적을 조회합니다.'],
+  'year-plan': ['연간계획','연간 영업 계획을 관리합니다.'],
+  'month-plan': ['월간계획','월간 영업 계획을 관리합니다.'],
+  'roadmap-main': ['로드맵관리','금형 로드맵을 관리합니다.'],
+  'roadmap-view': ['로드맵현황','금형 로드맵 현황입니다.'],
+  'set-plan': ['납품계획','SET 납품 계획을 관리합니다.'],
+  'set-result': ['납품실적','SET 납품 실적을 조회합니다.'],
+  'rev-list': ['리비전목록','리비전 목록을 관리합니다.'],
+  'rev-history': ['변경이력','변경 이력을 조회합니다.'],
+  'drawing': ['도면관리','도면 문서를 관리합니다.'],
+  'spec': ['사양관리','사양 정보를 관리합니다.'],
+  'bom': ['BOM관리','BOM 정보를 관리합니다.'],
+  'design-progress': ['설계진도현황','설계 업무 진행 상태를 조회합니다.'],
+  'design-delay': ['지연현황','설계 지연 건을 조회합니다.'],
+  'po-reg': ['발주등록','구매 발주 정보를 등록합니다.'],
+  'po-status': ['발주현황','발주 진행 현황을 조회합니다.'],
+  'vendor': ['거래처관리','거래처 기준정보를 관리합니다.'],
+  'inbound-reg': ['입고등록','자재 입고를 등록합니다.'],
+  'inbound-status': ['입고현황','입고 현황을 조회합니다.'],
+  'work-order': ['작업지시','생산 작업지시를 관리합니다.'],
+  'work-status': ['생산현황','생산 진행 현황을 조회합니다.'],
+  'work-result': ['생산실적','생산 실적을 조회합니다.'],
+  'inspection': ['검사등록','품질 검사 결과를 등록합니다.'],
+  'quality-status': ['품질현황','품질 현황을 조회합니다.'],
+  'cost-calc': ['원가계산','제품 원가를 계산합니다.'],
+  'cost-status': ['원가현황','원가 집계 현황을 조회합니다.'],
+  'item-master': ['품목정보','품목 기준정보를 관리합니다.'],
+  'code-master': ['공통코드','시스템 공통코드를 관리합니다.'],
+  'user-master': ['사용자관리','사용자 및 권한을 관리합니다.']
+};
+
+const sampleRows = [
+  ['G02001','','MCC0534719','SIDE PANEL','G021','1','EA','진행','2026-08-20','2026-08-28'],
+  ['DGD08009','','','UPPER','G021','10','EA','완료','2026-08-18','2026-08-27'],
+  ['DGT09011','55LE95','MCK627697','BACK COVER','G021','5','EA','진행','2026-08-19','2026-08-29'],
+  ['DGT09014','42LE70','MCK627673','BACK COVER','G021','5','EA','대기','2026-08-20','2026-08-30'],
+  ['DGT09017','42LE70','MCK627673','BACK COVER','G021','1','EA','진행','2026-08-21','2026-08-31'],
+  ['DGW09017','TF-CAR','','RETAINER','G021','3','EA','완료','2026-08-17','2026-08-26'],
+  ['DGE09020','BICS2','','CLAD','G021','1','EA','진행','2026-08-22','2026-09-02'],
+  ['DGT09024','50','','BACK COVER','G021','3','EA','대기','2026-08-22','2026-09-05'],
+  ['DGT09027','42LD65','MJH618830','VESA BRACKET','G021','1','EA','진행','2026-08-21','2026-08-30'],
+  ['DSK09159','V3-PJT','3304JA0017','BOTTOM PLATE','G021','2','EA','완료','2026-08-19','2026-08-25'],
+  ['DSK09208','LEGEND','4930J32004','HOLDER SHELF','G021','1','EA','진행','2026-08-20','2026-08-28'],
+  ['DSK09211','EMPIRE8A','MBBG23029','BUTTON DECOR-W','G021','2','EA','진행','2026-08-21','2026-08-30']
+];
+
+function byId(id){ return document.getElementById(id); }
+function getL1(){ return MENU.find(x=>x.key===currentL1) || MENU[0]; }
+function getL2(){ return getL1().second.find(x=>x.key===currentL2) || getL1().second[0]; }
+
+function buildL1(){
+  byId('l1Menu').innerHTML = MENU.map(m =>
+    `<button class="l1-btn ${m.key===currentL1?'active':''}" onclick="selectL1('${m.key}')">${m.name}</button>`
+  ).join('');
+}
+function buildL2(){
+  const l1 = getL1();
+  byId('l2Menu').innerHTML = l1.second.map(m =>
+    `<button class="l2-btn ${m.key===currentL2?'active':''}" onclick="selectL2('${m.key}')"><span class="l2-icon">${m.icon}</span><span class="l2-label">${m.name}</span></button>`
+  ).join('');
+}
+function buildTree(){
+  const l2 = getL2();
+  byId('leftTitle').textContent = l2.name;
+  byId('treeMenu').innerHTML = l2.groups.map(g => `
+    <div class="tree-group">
+      <div class="tree-caption">${g.name}</div>
+      ${g.items.map(([id,label])=>`<button class="tree-item ${id===activeTab?'active':''}" onclick="openPage('${id}')">${label}</button>`).join('')}
+    </div>`).join('');
+}
+function selectL1(key){
+  currentL1 = key;
+  currentL2 = getL1().second[0].key;
+  buildL1(); buildL2(); buildTree();
+}
+function selectL2(key){
+  currentL2 = key;
+  buildL2(); buildTree();
+}
+
+function openPage(id){
+  const title = (pageMeta[id]||[id])[0];
+  if(!openTabs.has(id)) openTabs.set(id,{id,title});
+  activeTab = id;
+  renderTabs(); renderPages(); buildTree();
+}
+function closePage(id, ev){
+  if(ev) ev.stopPropagation();
+  if(id==='order-status' && openTabs.size===1) return;
+  const ids = [...openTabs.keys()];
+  const idx = ids.indexOf(id);
+  openTabs.delete(id);
+  if(activeTab===id){
+    const next = ids[idx+1] || ids[idx-1] || 'order-status';
+    if(!openTabs.has(next)) openTabs.set('order-status',{id:'order-status',title:'수주현황'});
+    activeTab = openTabs.has(next) ? next : 'order-status';
+  }
+  renderTabs(); renderPages(); buildTree();
+}
+function activateTab(id){ activeTab=id; renderTabs(); renderPages(); buildTree(); }
+
+function renderTabs(){
+  byId('tabbar').innerHTML = [...openTabs.values()].map((t,i)=>
+    `<div class="tab ${t.id===activeTab?'active':''} ${i===0?'tab-home':''}" onclick="activateTab('${t.id}')">
+      <span class="tab-title">${t.title}</span>
+      <button class="close" title="닫기" onclick="closePage('${t.id}',event)">×</button>
+    </div>`
+  ).join('');
+  requestAnimationFrame(()=>{
+    const el = byId('tabbar').querySelector('.tab.active');
+    el?.scrollIntoView({block:'nearest',inline:'nearest'});
+  });
+}
+
+function pageHtml(id){
+  const meta = pageMeta[id] || [id,'업무 화면'];
+  const isGrid = ['order-status','po-status','inbound-status','work-status','work-result','design-progress','design-delay','quality-status','cost-status','sales-result','roadmap-view','rev-history'].includes(id);
+  if(isGrid) return gridPage(id,meta);
+  return formPage(id,meta);
+}
+function gridPage(id,meta){
+  return `
+    <section class="page ${id===activeTab?'active':''}" data-page="${id}">
+      <div class="page-title">
+        <h2>${meta[0]}</h2><span class="sub">${meta[1]}</span>
+        <div class="page-actions"><button class="erp-btn primary" onclick="fakeSearch(this)">조회</button><button class="erp-btn">신규</button><button class="erp-btn">엑셀</button><button class="erp-btn">닫기</button></div>
+      </div>
+      <div class="search-panel">
+        <div class="search-row">
+          <div class="search-label">구분</div><div class="search-field"><select><option>전체</option><option>진행</option><option>완료</option></select></div>
+          <div class="search-label">공장</div><div class="search-field"><select><option>1공장</option><option>2공장</option></select></div>
+          <div class="search-label hide-sm">담당자</div><div class="search-field hide-sm"><input placeholder="담당자"></div>
+        </div>
+        <div class="search-row">
+          <div class="search-label">국내/해외</div><div class="search-field"><select><option>전체</option><option>국내</option><option>해외</option></select></div>
+          <div class="search-label">수주명</div><div class="search-field"><input placeholder="수주명 또는 모델 검색"></div>
+          <div class="search-label hide-sm">고객사</div><div class="search-field hide-sm"><input placeholder="고객사"></div>
+        </div>
+      </div>
+      <div class="grid-wrap">
+        <div class="grid-toolbar"><button class="erp-btn">상세보기</button><button class="erp-btn">상세보기(관리자)</button><button class="erp-btn">검색</button><span class="right">총 ${sampleRows.length}건</span></div>
+        <table class="erp-grid">
+          <thead><tr><th style="width:42px">No</th><th style="width:90px">계번</th><th style="width:90px">모델</th><th style="width:110px">도번</th><th style="width:150px">품명</th><th style="width:70px">고객사</th><th style="width:60px">수량</th><th style="width:60px">단위</th><th style="width:70px">상태</th><th style="width:100px">수주일</th><th style="width:100px">납기</th></tr></thead>
+          <tbody>${sampleRows.map((r,i)=>`<tr class="${i===0?'selected':''}" onclick="selectRow(this)"><td class="center">${i+1}</td>${r.map((c,ci)=>`<td class="${ci===5?'num':''} ${ci===7?'status':''}">${c}</td>`).join('')}</tr>`).join('')}</tbody>
+        </table>
+      </div>
+    </section>`;
+}
+function formPage(id,meta){
+  return `
+    <section class="page ${id===activeTab?'active':''}" data-page="${id}">
+      <div class="page-title">
+        <h2>${meta[0]}</h2><span class="sub">${meta[1]}</span>
+        <div class="page-actions"><button class="erp-btn primary">저장</button><button class="erp-btn">신규</button><button class="erp-btn">삭제</button></div>
+      </div>
+      <div class="search-panel">
+        <div class="search-row">
+          <div class="search-label">코드</div><div class="search-field"><input value="ERP-2026-001"></div>
+          <div class="search-label">명칭</div><div class="search-field"><input value="샘플 데이터"></div>
+          <div class="search-label hide-sm">상태</div><div class="search-field hide-sm"><select><option>사용</option><option>미사용</option></select></div>
+        </div>
+        <div class="search-row">
+          <div class="search-label">담당자</div><div class="search-field"><input value="관리자"></div>
+          <div class="search-label">등록일</div><div class="search-field"><input type="date" value="2026-08-22"></div>
+          <div class="search-label hide-sm">비고</div><div class="search-field hide-sm"><input placeholder="비고"></div>
+        </div>
+      </div>
+      <div class="info-box"><b>${meta[0]}</b><br>${meta[1]}<br><br>이 샘플 화면은 첨부 이미지의 전통적인 ERP UI 톤을 기준으로 구성되었습니다. 좌측 메뉴를 클릭하면 같은 화면은 중복 생성하지 않고 기존 탭으로 이동하며, 다른 화면은 본문 상단에 계속 누적됩니다.</div>
+    </section>`;
+}
+function renderPages(){
+  byId('contentShell').innerHTML = [...openTabs.keys()].map(pageHtml).join('');
+}
+function selectRow(tr){
+  tr.closest('tbody').querySelectorAll('tr').forEach(x=>x.classList.remove('selected'));
+  tr.classList.add('selected');
+}
+function fakeSearch(btn){
+  const old=btn.textContent; btn.textContent='조회중...'; btn.disabled=true;
+  setTimeout(()=>{btn.textContent=old;btn.disabled=false;},450);
+}
+function tick(){
+  const d=new Date();
+  byId('clock').textContent=d.toLocaleString('ko-KR',{hour12:false,month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
+}
+
+openTabs.set('order-status',{id:'order-status',title:'수주현황'});
+buildL1(); buildL2(); buildTree(); renderTabs(); renderPages(); tick(); setInterval(tick,30000);
+</script>
+</body>
+</html>
